@@ -17,7 +17,7 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> save(@Valid @RequestBody UserSaveRequest userSaveRequest) {
+    public ResponseEntity<String> save(@RequestBody @Valid UserSaveRequest userSaveRequest) {
         return ResponseEntity.ok(authenticationService.save(userSaveRequest));
     }
 

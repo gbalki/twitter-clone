@@ -14,6 +14,6 @@ public class PasswordRequest {
 
     private String passwordResetToken;
 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Password must have at least 1 uppercase, 1 lowercase letter and 1 number")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{twitter.clone.constraint.password.pattern.message}")
     private String newPassword;
 }

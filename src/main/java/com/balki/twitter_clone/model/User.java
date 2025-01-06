@@ -1,5 +1,6 @@
 package com.balki.twitter_clone.model;
 
+import com.balki.twitter_clone.validation.UniqueEmail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,6 @@ public class User implements UserDetails {
 
     private String displayName;
 
-    @Column(unique=true)
     private String email;
 
     private String password;

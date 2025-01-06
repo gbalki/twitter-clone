@@ -1,5 +1,6 @@
 package com.balki.twitter_clone.request;
 
+import com.balki.twitter_clone.validation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,22 +14,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserSaveRequest {
 
-    @NotBlank(message = "first name can not be blank")
+    @NotBlank(message = "{twitter.clone.constraint.firstname.notblank}")
     @Size(min = 2, max = 255)
     private String firstName;
 
-    @NotBlank(message = "last name can not be blank")
+    @NotBlank(message = "{twitter.clone.constraint.lastname.notblank}")
     @Size(min = 2, max = 255)
     private String lastName;
 
-    @NotBlank(message = "display name can not be blank")
+    @NotBlank(message = "{twitter.clone.constraint.displayname.notblank}")
     @Size(min = 4, max = 255)
     private String displayName;
 
-    @Email(message = "should be email format")
-    @NotBlank(message = "email can not be blank")
+    @Email(message = "{twitter.clone.constraint.email.format}")
+    @NotBlank(message = "{twitter.clone.constraint.email.notblank}")
+    @UniqueEmail
     private String email;
 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Password must have at least 1 uppercase, 1 lowercase letter and 1 number")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{twitter.clone.constraint.password.pattern.message}")
     private String password;
 }

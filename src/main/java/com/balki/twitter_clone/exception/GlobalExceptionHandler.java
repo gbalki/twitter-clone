@@ -1,5 +1,7 @@
 package com.balki.twitter_clone.exception;
 
+import com.balki.twitter_clone.response.ErrorResponse;
+import com.balki.twitter_clone.response.GenericErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,8 +16,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(UserNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "User not found", ex.getMessage());
+    public ResponseEntity<GenericErrorResponse> handleResourceNotFoundException(UserNotFoundException ex) {
+        GenericErrorResponse errorResponse = new GenericErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "User not found", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -25,17 +27,15 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(
                 error ->
                         errors.put(error.getField(), error.getDefaultMessage()));
-        String errorMessages = String.join(", ", errors.values());
-
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(), HttpStatus.NOT_FOUND.value(),
-                "Validation Error", errorMessages);
+                "Validation Error", errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "an error occurred", ex.getMessage());
+    public ResponseEntity<GenericErrorResponse> handleGlobalException(Exception ex) {
+        GenericErrorResponse errorResponse = new GenericErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "an error occurred", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

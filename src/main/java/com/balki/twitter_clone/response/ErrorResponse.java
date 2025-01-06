@@ -1,8 +1,9 @@
-package com.balki.twitter_clone.exception;
+package com.balki.twitter_clone.response;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 public class ErrorResponse {
@@ -13,9 +14,9 @@ public class ErrorResponse {
 
     private String error;
 
-    private String message;
+    private Map<String,String> message;
 
-    public ErrorResponse(LocalDateTime timestamp, int status, String error, String message) {
+    public ErrorResponse(LocalDateTime timestamp, int status, String error, Map message) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
