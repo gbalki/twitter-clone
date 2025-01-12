@@ -60,20 +60,6 @@ public class AuthenticationService {
         return "Please verify your account within 3 minutes";
     }
 
-    public TokenResponse login(AuthenticationRequest authenticationRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        User user = userRepository.findByEmail(authenticationRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + authenticationRequest.getEmail()));
-        if (!user.isActive()) {
-            throw new RuntimeException("user is not active");
-        }
-        var token = new Token();
-        token.setUser(user);
-        token.setAccessToken(jwtService.generateAccessToken(user));
-        token.setRefreshToken(jwtService.generateRefreshToken(user));
-        return mapper.map(tokenRepository.save(token), TokenResponse.class);
-    }
-
     public String verifyAccount(String email, String otp) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + email));
@@ -99,6 +85,20 @@ public class AuthenticationService {
         user.setOtpGeneratedTime(LocalDateTime.now());
         userRepository.save(user);
         return "Email sent... please verify account within 3 minute";
+    }
+
+    public TokenResponse login(AuthenticationRequest authenticationRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+        User user = userRepository.findByEmail(authenticationRequest.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + authenticationRequest.getEmail()));
+        if (!user.isActive()) {
+            throw new RuntimeException("user is not active");
+        }
+        var token = new Token();
+        token.setUser(user);
+        token.setAccessToken(jwtService.generateAccessToken(user));
+        token.setRefreshToken(jwtService.generateRefreshToken(user));
+        return mapper.map(tokenRepository.save(token), TokenResponse.class);
     }
 
     public String forgotPassword(PasswordRequest passwordRequest) {
