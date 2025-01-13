@@ -206,6 +206,8 @@ public class AuthenticationControllerTest {
 
     @Test
     public void logOut_Success() throws Exception {
+        doNothing().when(authenticationServiceMock).clearToken(tokenResponse.getAccessToken());
+
         mockMvc.perform(post(LOGOUT_URL)
                         .accept(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.getAccessToken()))
@@ -220,6 +222,8 @@ public class AuthenticationControllerTest {
     public void refreshToken_Success() throws Exception {
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
         refreshTokenRequest.setRefreshToken(tokenResponse.getRefreshToken());
+
+        when(authenticationServiceMock.refreshToken(refreshTokenRequest)).thenReturn(tokenResponse);
 
         String tokenJson = mockMvc.perform(post(REFRESH_TOKEN_URL)
                         .contentType(MediaType.APPLICATION_JSON)

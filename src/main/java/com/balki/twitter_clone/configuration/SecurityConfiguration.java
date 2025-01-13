@@ -20,6 +20,8 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
 
+    private final String baseUrl = "/api/1.0";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -27,12 +29,12 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/logout")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/refresh-token")).authenticated()
-        /*        .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/update/{id}")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/delete/{id}")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/twitters/save")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/file/upload")).authenticated()*/
+                .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/logout")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/refresh-token")).authenticated()
+                /*        .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/update/{id}")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/delete/{id}")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/api/1.0/twitters/save")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/api/1.0/file/upload")).authenticated()*/
                 .anyRequest()
                 .permitAll()
                 .and()
