@@ -47,16 +47,16 @@ public class AuthenticationService {
     @Transactional
     public String save(UserSaveRequest userSaveRequest) {
         String otp = otpUtil.generateOtp();
-        try {
-            emailUtil.sendOtpEmail(userSaveRequest.getEmail(), otp);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send otp please try again");
-        }
         User user = mapper.map(userSaveRequest, User.class);
         user.setPassword(passwordEncoder.encode(userSaveRequest.getPassword()));
         user.setOtp(otp);
         user.setOtpGeneratedTime(LocalDateTime.now());
         userRepository.save(user);
+        try {
+            emailUtil.sendOtpEmail(userSaveRequest.getEmail(), otp);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send otp please try again");
+        }
         return "Please verify your account within 3 minutes";
     }
 

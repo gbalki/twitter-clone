@@ -111,12 +111,12 @@ public class AuthenticationServiceTest {
 
         String otp = otpUtil.generateOtp();
 
-        emailUtil.sendOtpEmail(userSaveRequest.getEmail(), otp);
         User user = mapper.map(userSaveRequest, User.class);
         user.setPassword(passwordEncoder.encode(userSaveRequest.getPassword()));
         user.setOtp(otp);
         user.setOtpGeneratedTime(LocalDateTime.now());
         userRepository.save(user);
+        emailUtil.sendOtpEmail(userSaveRequest.getEmail(), otp);
 
         User savedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
         Assertions.assertNotNull(savedUser);
