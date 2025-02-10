@@ -29,7 +29,7 @@ public class UserService {
 
     public Page<UserDto> getAll(Pageable page, User currentUser) {
         if (currentUser != null) {
-            Page<User> currentUserNot = userRepository.findByEmailNot(currentUser.getEmail(), page);
+            Page<User> currentUserNot = userRepository.findByEmailNotAndActiveTrue(currentUser.getEmail(), page);
             return new PageImpl<>(currentUserNot.stream().map(u -> mapper.map(u, UserDto.class)).collect(Collectors.toList()));
         }
         Page<User> users = userRepository.findUserByActiveTrue(page);
