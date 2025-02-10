@@ -6,7 +6,7 @@ import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.TokenRepository;
 import com.balki.twitter_clone.repository.UserRepository;
 import com.balki.twitter_clone.request.*;
-import com.balki.twitter_clone.response.TokenResponse;
+import com.balki.twitter_clone.dto.TokenDto;
 import com.balki.twitter_clone.util.EmailUtil;
 import com.balki.twitter_clone.util.OtpUtil;
 
@@ -66,6 +66,7 @@ public class AuthenticationService {
         if (user.getOtp().equals(otp) && Duration.between(user.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (3 * 60)) {
             user.setActive(true);
+            user.setOtp(null);
             userRepository.save(user);
             return "OTP verified you can login";
         }
@@ -87,7 +88,7 @@ public class AuthenticationService {
         return "Email sent... please verify account within 3 minute";
     }
 
-    public TokenResponse login(AuthenticationRequest authenticationRequest) {
+    public TokenDto login(AuthenticationRequest authenticationRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         User user = userRepository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + authenticationRequest.getEmail()));
@@ -98,7 +99,7 @@ public class AuthenticationService {
         token.setUser(user);
         token.setAccessToken(jwtService.generateAccessToken(user));
         token.setRefreshToken(jwtService.generateRefreshToken(user));
-        return mapper.map(tokenRepository.save(token), TokenResponse.class);
+        return mapper.map(tokenRepository.save(token), TokenDto.class);
     }
 
     public String forgotPassword(PasswordRequest passwordRequest) {
@@ -131,7 +132,7 @@ public class AuthenticationService {
         tokenRepository.deleteById(accessToken);
     }
 
-    public TokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    public TokenDto refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String email = jwtService.findEmail(refreshTokenRequest.getRefreshToken());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + email));
@@ -140,7 +141,7 @@ public class AuthenticationService {
             token.setUser(user);
             token.setAccessToken(jwtService.generateAccessToken(user));
             token.setRefreshToken(refreshTokenRequest.getRefreshToken());
-            return mapper.map(tokenRepository.save(token), TokenResponse.class);
+            return mapper.map(tokenRepository.save(token), TokenDto.class);
         }
         throw new RuntimeException();
     }

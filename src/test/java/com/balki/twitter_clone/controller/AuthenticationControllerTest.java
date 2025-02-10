@@ -7,7 +7,7 @@ import com.balki.twitter_clone.request.AuthenticationRequest;
 import com.balki.twitter_clone.request.PasswordRequest;
 import com.balki.twitter_clone.request.RefreshTokenRequest;
 import com.balki.twitter_clone.request.UserSaveRequest;
-import com.balki.twitter_clone.response.TokenResponse;
+import com.balki.twitter_clone.dto.TokenDto;
 import com.balki.twitter_clone.service.AuthenticationService;
 import com.balki.twitter_clone.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,14 +74,14 @@ public class AuthenticationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private TokenResponse tokenResponse;
+    private TokenDto tokenDto;
 
     private User validUser;
 
     @BeforeEach
     public void setUp() throws Exception {
         validUser = createUser("testexample@gmail.com", "P4ssword");
-        tokenResponse = loggedInUser(validUser.getEmail(), "P4ssword");
+        tokenDto = loggedInUser(validUser.getEmail(), "P4ssword");
     }
 
     private User createUser(String email, String password) {
@@ -103,7 +103,7 @@ public class AuthenticationControllerTest {
         return user;
     }
 
-    private TokenResponse loggedInUser(String email, String password) throws Exception {
+    private TokenDto loggedInUser(String email, String password) throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setEmail(email);
         request.setPassword(password);
@@ -116,9 +116,9 @@ public class AuthenticationControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        TokenResponse tokenResponse = objectMapper.readValue(tokenJson, TokenResponse.class);
-        Assertions.assertEquals(email, jwtService.findEmail(tokenResponse.getAccessToken()));
-        return tokenResponse;
+        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
+        Assertions.assertEquals(email, jwtService.findEmail(tokenDto.getAccessToken()));
+        return tokenDto;
     }
 
     @DisplayName("Test post creation")
@@ -206,35 +206,35 @@ public class AuthenticationControllerTest {
 
     @Test
     public void logOut_Success() throws Exception {
-        doNothing().when(authenticationServiceMock).clearToken(tokenResponse.getAccessToken());
+        doNothing().when(authenticationServiceMock).clearToken(tokenDto.getAccessToken());
 
         mockMvc.perform(post(LOGOUT_URL)
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.getAccessToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Log out Successfully"));
 
-        Assertions.assertTrue(tokenRepository.findById(tokenResponse.getAccessToken()).isEmpty());
+        Assertions.assertTrue(tokenRepository.findById(tokenDto.getAccessToken()).isEmpty());
     }
 
     @DisplayName("Test for refresh token")
     @Test
     public void refreshToken_Success() throws Exception {
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
-        refreshTokenRequest.setRefreshToken(tokenResponse.getRefreshToken());
+        refreshTokenRequest.setRefreshToken(this.tokenDto.getRefreshToken());
 
-        when(authenticationServiceMock.refreshToken(refreshTokenRequest)).thenReturn(tokenResponse);
+        when(authenticationServiceMock.refreshToken(refreshTokenRequest)).thenReturn(this.tokenDto);
 
         String tokenJson = mockMvc.perform(post(REFRESH_TOKEN_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.getRefreshToken())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.tokenDto.getRefreshToken())
                         .content(objectMapper.writeValueAsString(refreshTokenRequest))) // Corrected parentheses
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        TokenResponse tokenResponse = objectMapper.readValue(tokenJson, TokenResponse.class);
-        Assertions.assertEquals(validUser.getEmail(), jwtService.findEmail(tokenResponse.getAccessToken()));
+        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
+        Assertions.assertEquals(validUser.getEmail(), jwtService.findEmail(tokenDto.getAccessToken()));
     }
 }

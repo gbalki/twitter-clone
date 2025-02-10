@@ -5,11 +5,10 @@ import com.balki.twitter_clone.model.Token;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.TokenRepository;
 import com.balki.twitter_clone.repository.UserRepository;
-import com.balki.twitter_clone.request.AuthenticationRequest;
 import com.balki.twitter_clone.request.PasswordRequest;
 import com.balki.twitter_clone.request.RefreshTokenRequest;
 import com.balki.twitter_clone.request.UserSaveRequest;
-import com.balki.twitter_clone.response.TokenResponse;
+import com.balki.twitter_clone.dto.TokenDto;
 import com.balki.twitter_clone.util.EmailUtil;
 import com.balki.twitter_clone.util.OtpUtil;
 import jakarta.mail.MessagingException;
@@ -42,7 +41,7 @@ public class AuthenticationServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private TokenResponse tokenResponse;
+    private TokenDto tokenDto;
 
     private User validUser;
 
@@ -67,7 +66,7 @@ public class AuthenticationServiceTest {
     @BeforeEach
     public void setUp() throws Exception {
         validUser = createUser("testexample@gmail.com", "P4ssword");
-        tokenResponse = loggedInUser(validUser.getEmail(), "P4ssword");
+        tokenDto = loggedInUser(validUser.getEmail(), "P4ssword");
     }
 
     private User createUser(String email, String password) {
@@ -86,7 +85,7 @@ public class AuthenticationServiceTest {
         return user;
     }
 
-    private TokenResponse loggedInUser(String email, String password) throws Exception {
+    private TokenDto loggedInUser(String email, String password) throws Exception {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + email));
@@ -97,7 +96,7 @@ public class AuthenticationServiceTest {
         token.setAccessToken(jwtService.generateAccessToken(user));
         token.setRefreshToken(jwtService.generateRefreshToken(user));
 
-        return mapper.map(tokenRepository.save(token), TokenResponse.class);
+        return mapper.map(tokenRepository.save(token), TokenDto.class);
     }
 
     @Test
@@ -203,15 +202,15 @@ public class AuthenticationServiceTest {
 
     @Test
     public void clearTokenTest() throws Exception {
-        Assertions.assertNotNull(tokenRepository.findById(tokenResponse.getAccessToken()));
-        tokenRepository.deleteById(tokenResponse.getAccessToken());
-        Assertions.assertTrue(tokenRepository.findById(tokenResponse.getAccessToken()).isEmpty());
+        Assertions.assertNotNull(tokenRepository.findById(tokenDto.getAccessToken()));
+        tokenRepository.deleteById(tokenDto.getAccessToken());
+        Assertions.assertTrue(tokenRepository.findById(tokenDto.getAccessToken()).isEmpty());
     }
 
     @Test
     public void refreshTokenTest() throws Exception {
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
-        refreshTokenRequest.setRefreshToken(tokenResponse.getRefreshToken());
+        refreshTokenRequest.setRefreshToken(tokenDto.getRefreshToken());
         String email = jwtService.findEmail(refreshTokenRequest.getRefreshToken());
         Assertions.assertNotNull(email);
         User user = userRepository.findByEmail(email)
@@ -224,9 +223,9 @@ public class AuthenticationServiceTest {
         token.setUser(user);
         token.setAccessToken(jwtService.generateAccessToken(user));
         token.setRefreshToken(jwtService.generateRefreshToken(user));
-        mapper.map(tokenRepository.save(token), TokenResponse.class);
-        Assertions.assertNotNull(tokenRepository.findById(tokenResponse.getAccessToken()));
-        TokenResponse response = authenticationService.refreshToken(refreshTokenRequest);
+        mapper.map(tokenRepository.save(token), TokenDto.class);
+        Assertions.assertNotNull(tokenRepository.findById(tokenDto.getAccessToken()));
+        TokenDto response = authenticationService.refreshToken(refreshTokenRequest);
         Assertions.assertNotNull(response);
     }
 

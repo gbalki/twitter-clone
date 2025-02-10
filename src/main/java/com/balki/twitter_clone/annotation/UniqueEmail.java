@@ -1,5 +1,6 @@
-package com.balki.twitter_clone.validation;
+package com.balki.twitter_clone.annotation;
 
+import com.balki.twitter_clone.validation.UniqueEmailValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;

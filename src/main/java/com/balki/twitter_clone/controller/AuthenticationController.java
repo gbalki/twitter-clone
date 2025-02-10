@@ -2,7 +2,7 @@ package com.balki.twitter_clone.controller;
 
 import com.balki.twitter_clone.request.*;
 import com.balki.twitter_clone.response.GenericResponse;
-import com.balki.twitter_clone.response.TokenResponse;
+import com.balki.twitter_clone.dto.TokenDto;
 import com.balki.twitter_clone.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<TokenDto> login(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authenticationService.login(authenticationRequest));
     }
 
@@ -56,7 +56,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<TokenResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
+    public ResponseEntity<TokenDto> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 }

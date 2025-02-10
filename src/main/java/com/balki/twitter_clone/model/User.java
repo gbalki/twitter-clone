@@ -1,6 +1,5 @@
 package com.balki.twitter_clone.model;
 
-import com.balki.twitter_clone.validation.UniqueEmail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,6 +49,9 @@ public class User implements UserDetails {
     private List<Twitter> twitters;
 
    */
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

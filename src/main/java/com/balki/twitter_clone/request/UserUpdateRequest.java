@@ -1,18 +1,16 @@
 package com.balki.twitter_clone.request;
 
-import com.balki.twitter_clone.annotation.UniqueEmail;
-import jakarta.validation.constraints.Email;
+import com.balki.twitter_clone.annotation.FileType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserSaveRequest {
+@NoArgsConstructor
+public class UserUpdateRequest {
 
     @NotBlank(message = "{twitter.clone.constraint.firstname.notblank}")
     @Size(min = 2, max = 255)
@@ -26,11 +24,6 @@ public class UserSaveRequest {
     @Size(min = 4, max = 255)
     private String displayName;
 
-    @Email(message = "{twitter.clone.constraint.email.format}")
-    @NotBlank(message = "{twitter.clone.constraint.email.notblank}")
-    @UniqueEmail
-    private String email;
-
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{twitter.clone.constraint.password.pattern.message}")
-    private String password;
+    @FileType(types = {"jpeg","png"})
+    private String image;
 }

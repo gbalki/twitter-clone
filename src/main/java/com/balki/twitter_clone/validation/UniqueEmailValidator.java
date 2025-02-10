@@ -1,5 +1,6 @@
 package com.balki.twitter_clone.validation;
 
+import com.balki.twitter_clone.annotation.UniqueEmail;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
