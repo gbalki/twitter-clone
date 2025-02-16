@@ -33,10 +33,8 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/refresh-token")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/update/{id}")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/delete/{id}")).authenticated()
-                /*
-
-                        .requestMatchers(new AntPathRequestMatcher("/api/1.0/twitters/save")).authenticated()
-                        .requestMatchers(new AntPathRequestMatcher("/api/1.0/file/upload")).authenticated()*/
+                .requestMatchers(new AntPathRequestMatcher(baseUrl + "/twitters/save")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher(baseUrl + "/file/upload")).authenticated()
                 .anyRequest()
                 .permitAll()
                 .and()

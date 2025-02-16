@@ -3,7 +3,7 @@ package com.balki.twitter_clone.dto;
 import lombok.Data;
 
 @Data
-public class TokenDto {
+public class TokenDTO {
 
     private String accessToken;
 

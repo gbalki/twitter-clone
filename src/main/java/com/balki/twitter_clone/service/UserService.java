@@ -1,6 +1,6 @@
 package com.balki.twitter_clone.service;
 
-import com.balki.twitter_clone.dto.UserDto;
+import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.exception.UserNotFoundException;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.UserRepository;
@@ -27,16 +27,16 @@ public class UserService {
 
     private final JwtService jwtService;
 
-    public Page<UserDto> getAll(Pageable page, User currentUser) {
+    public Page<UserDTO> getAll(Pageable page, User currentUser) {
         if (currentUser != null) {
             Page<User> currentUserNot = userRepository.findByEmailNotAndActiveTrue(currentUser.getEmail(), page);
-            return new PageImpl<>(currentUserNot.stream().map(u -> mapper.map(u, UserDto.class)).collect(Collectors.toList()));
+            return new PageImpl<>(currentUserNot.stream().map(u -> mapper.map(u, UserDTO.class)).collect(Collectors.toList()));
         }
         Page<User> users = userRepository.findUserByActiveTrue(page);
-        return new PageImpl<>(users.stream().map(user -> mapper.map(user, UserDto.class)).collect(Collectors.toList()));
+        return new PageImpl<>(users.stream().map(user -> mapper.map(user, UserDTO.class)).collect(Collectors.toList()));
     }
 
-    public UserDto updateUser(Long id, UserUpdateRequest userUpdateRequest) {
+    public UserDTO updateUser(Long id, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findUserById(id);
         user.setFirstName(userUpdateRequest.getFirstName());
         user.setLastName(userUpdateRequest.getLastName());
@@ -50,11 +50,11 @@ public class UserService {
                 throw new RuntimeException("Incorrect file type");
             }
         }
-        return mapper.map(userRepository.save(user), UserDto.class);
+        return mapper.map(userRepository.save(user), UserDTO.class);
     }
 
-    public UserDto getUserById(Long id) {
-        return mapper.map(userRepository.findUserById(id), UserDto.class);
+    public UserDTO getUserById(Long id) {
+        return mapper.map(userRepository.findUserById(id), UserDTO.class);
     }
 
     public void deleteUser(Long id) {

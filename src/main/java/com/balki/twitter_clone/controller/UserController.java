@@ -1,7 +1,7 @@
 package com.balki.twitter_clone.controller;
 
 import com.balki.twitter_clone.annotation.CurrentUser;
-import com.balki.twitter_clone.dto.UserDto;
+import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.request.UserUpdateRequest;
 import com.balki.twitter_clone.response.GenericResponse;
@@ -23,18 +23,18 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/getAll")
-    Page<UserDto> getAllUser(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page,
+    Page<UserDTO> getAllUser(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page,
                              @CurrentUser User user) {
         return userService.getAll(page, user);
     }
 
     @GetMapping("/getBy/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id,
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
                                               @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(userService.updateUser(id, userUpdateRequest));
     }

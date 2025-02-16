@@ -7,7 +7,7 @@ import com.balki.twitter_clone.request.AuthenticationRequest;
 import com.balki.twitter_clone.request.PasswordRequest;
 import com.balki.twitter_clone.request.RefreshTokenRequest;
 import com.balki.twitter_clone.request.UserSaveRequest;
-import com.balki.twitter_clone.dto.TokenDto;
+import com.balki.twitter_clone.dto.TokenDTO;
 import com.balki.twitter_clone.service.AuthenticationService;
 import com.balki.twitter_clone.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +74,7 @@ public class AuthenticationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private TokenDto tokenDto;
+    private TokenDTO tokenDto;
 
     private User validUser;
 
@@ -103,7 +103,7 @@ public class AuthenticationControllerTest {
         return user;
     }
 
-    private TokenDto loggedInUser(String email, String password) throws Exception {
+    private TokenDTO loggedInUser(String email, String password) throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setEmail(email);
         request.setPassword(password);
@@ -116,7 +116,7 @@ public class AuthenticationControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
+        TokenDTO tokenDto = objectMapper.readValue(tokenJson, TokenDTO.class);
         Assertions.assertEquals(email, jwtService.findEmail(tokenDto.getAccessToken()));
         return tokenDto;
     }
@@ -234,7 +234,7 @@ public class AuthenticationControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
+        TokenDTO tokenDto = objectMapper.readValue(tokenJson, TokenDTO.class);
         Assertions.assertEquals(validUser.getEmail(), jwtService.findEmail(tokenDto.getAccessToken()));
     }
 }

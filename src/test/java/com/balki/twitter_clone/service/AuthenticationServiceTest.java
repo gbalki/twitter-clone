@@ -8,7 +8,7 @@ import com.balki.twitter_clone.repository.UserRepository;
 import com.balki.twitter_clone.request.PasswordRequest;
 import com.balki.twitter_clone.request.RefreshTokenRequest;
 import com.balki.twitter_clone.request.UserSaveRequest;
-import com.balki.twitter_clone.dto.TokenDto;
+import com.balki.twitter_clone.dto.TokenDTO;
 import com.balki.twitter_clone.util.EmailUtil;
 import com.balki.twitter_clone.util.OtpUtil;
 import jakarta.mail.MessagingException;
@@ -41,7 +41,7 @@ public class AuthenticationServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private TokenDto tokenDto;
+    private TokenDTO tokenDto;
 
     private User validUser;
 
@@ -85,7 +85,7 @@ public class AuthenticationServiceTest {
         return user;
     }
 
-    private TokenDto loggedInUser(String email, String password) throws Exception {
+    private TokenDTO loggedInUser(String email, String password) throws Exception {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with this email: " + email));
@@ -96,7 +96,7 @@ public class AuthenticationServiceTest {
         token.setAccessToken(jwtService.generateAccessToken(user));
         token.setRefreshToken(jwtService.generateRefreshToken(user));
 
-        return mapper.map(tokenRepository.save(token), TokenDto.class);
+        return mapper.map(tokenRepository.save(token), TokenDTO.class);
     }
 
     @Test
@@ -223,9 +223,9 @@ public class AuthenticationServiceTest {
         token.setUser(user);
         token.setAccessToken(jwtService.generateAccessToken(user));
         token.setRefreshToken(jwtService.generateRefreshToken(user));
-        mapper.map(tokenRepository.save(token), TokenDto.class);
+        mapper.map(tokenRepository.save(token), TokenDTO.class);
         Assertions.assertNotNull(tokenRepository.findById(tokenDto.getAccessToken()));
-        TokenDto response = authenticationService.refreshToken(refreshTokenRequest);
+        TokenDTO response = authenticationService.refreshToken(refreshTokenRequest);
         Assertions.assertNotNull(response);
     }
 
