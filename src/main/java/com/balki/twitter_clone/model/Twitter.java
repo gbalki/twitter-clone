@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -28,4 +29,7 @@ public class Twitter {
 
     @OneToOne(mappedBy = "twitter", orphanRemoval = true)
     private FileAttachment fileAttachment;
+
+    @OneToMany(mappedBy = "twitter",cascade = CascadeType.REMOVE)
+    private List<Like> likes;
 }

@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Twitter> twitters;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<Like> likes;
+
     public String getFullName() {
         return firstName + " " + lastName;
     }

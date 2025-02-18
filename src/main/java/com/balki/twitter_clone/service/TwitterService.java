@@ -1,11 +1,14 @@
 package com.balki.twitter_clone.service;
 
 import com.balki.twitter_clone.dto.TwitterDTO;
+import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.exception.FileAttachmentNotFoundException;
 import com.balki.twitter_clone.model.FileAttachment;
+import com.balki.twitter_clone.model.Like;
 import com.balki.twitter_clone.model.Twitter;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.FileAttachmentRepository;
+import com.balki.twitter_clone.repository.LikeRepository;
 import com.balki.twitter_clone.repository.TwitterRepository;
 import com.balki.twitter_clone.repository.UserRepository;
 import com.balki.twitter_clone.request.TwitterSaveRequest;
@@ -32,7 +35,10 @@ public class TwitterService {
 
     private final UserRepository userRepository;
 
+    private final LikeRepository likeRepository;
+
     private final ModelMapper mapper;
+
 
     public void save(TwitterSaveRequest twitterSaveRequest, User user) {
         Twitter twitter = new Twitter();
@@ -87,6 +93,25 @@ public class TwitterService {
         }
         List<Twitter> twitters = twitterRepository.findAll(specification, sort);
         return twitters.stream().map(twit -> mapper.map(twit, TwitterDTO.class)).collect(Collectors.toList());
+    }
+
+    public String likeTwitt(long id, User user) {
+        Twitter twitter = twitterRepository.findById(id).orElseThrow();
+        Like existingLike = likeRepository.findByUserAndTwitter(user, twitter);
+        if (existingLike != null) {
+            likeRepository.delete(existingLike);
+            return "Favorite removed";
+        } else {
+            Like like = new Like();
+            like.setUser(user);
+            like.setTwitter(twitter);
+            likeRepository.save(like);
+            return "twit favorite";
+        }
+    }
+    public Page<UserDTO> getAllLikesOfTwitt(long id, Pageable page) {
+        Page<Like> likesPage = likeRepository.findByTwitterId(id, page);
+        return new PageImpl<>(likesPage.stream().map(likes -> mapper.map(likes, UserDTO.class)).collect(Collectors.toList()));
     }
 
     Specification<Twitter> idLessThan(long id) {

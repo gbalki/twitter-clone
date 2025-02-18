@@ -18516,3 +18516,36 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:114)
 	at java.base/java.lang.Thread.run(Thread.java:1575)
+2025-02-17 15:33:50.686772+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "drop table if exists [*]like cascade "; expected "identifier"; SQL statement:
+drop table if exists like cascade  [42001-224]
+2025-02-17 15:33:50.725370+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table [*]like (id bigint not null, twitter_id bigint, user_id bigint, primary key (id))"; expected "identifier"; SQL statement:
+create table like (id bigint not null, twitter_id bigint, user_id bigint, primary key (id)) [42001-224]
+2025-02-17 15:33:50.742373+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists [*]like add constraint FKc6k8wwdgwg82pawvh0bstn3p8 foreign key (twitter_id) references twits"; expected "identifier"; SQL statement:
+alter table if exists like add constraint FKc6k8wwdgwg82pawvh0bstn3p8 foreign key (twitter_id) references twits [42001-224]
+2025-02-17 15:33:50.745373+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists [*]like add constraint FK8h5k2lx0776xjpd72jsh6bhi1 foreign key (user_id) references users"; expected "identifier"; SQL statement:
+alter table if exists like add constraint FK8h5k2lx0776xjpd72jsh6bhi1 foreign key (user_id) references users [42001-224]
+2025-02-17 15:34:41.540889+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "drop table if exists [*]like cascade "; expected "identifier"; SQL statement:
+drop table if exists like cascade  [42001-224]
+2025-02-17 15:34:49.628835+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "drop table if exists [*]like cascade "; expected "identifier"; SQL statement:
+drop table if exists like cascade  [42001-224]
+2025-02-17 15:34:49.656842+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table [*]like (count bigint not null, id bigint not null, twitter_id bigint, user_id bigint, primary key (id))"; expected "identifier"; SQL statement:
+create table like (count bigint not null, id bigint not null, twitter_id bigint, user_id bigint, primary key (id)) [42001-224]
+2025-02-17 15:34:49.673845+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists [*]like add constraint FKc6k8wwdgwg82pawvh0bstn3p8 foreign key (twitter_id) references twits"; expected "identifier"; SQL statement:
+alter table if exists like add constraint FKc6k8wwdgwg82pawvh0bstn3p8 foreign key (twitter_id) references twits [42001-224]
+2025-02-17 15:34:49.675844+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists [*]like add constraint FK8h5k2lx0776xjpd72jsh6bhi1 foreign key (user_id) references users"; expected "identifier"; SQL statement:
+alter table if exists like add constraint FK8h5k2lx0776xjpd72jsh6bhi1 foreign key (user_id) references users [42001-224]
+2025-02-17 15:35:16.515948+03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS where [*]like"; expected "INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+SELECT * FROM USERS where like [42001-224]
+2025-02-17 15:35:34.042532+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "drop table if exists [*]like cascade "; expected "identifier"; SQL statement:
+drop table if exists like cascade  [42001-224]

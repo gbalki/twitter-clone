@@ -2,6 +2,7 @@ package com.balki.twitter_clone.controller;
 
 import com.balki.twitter_clone.annotation.CurrentUser;
 import com.balki.twitter_clone.dto.TwitterDTO;
+import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.request.TwitterSaveRequest;
 import com.balki.twitter_clone.response.GenericResponse;
@@ -37,14 +38,14 @@ public class TwitterController {
         return twitterService.getAllTwitts(page);
     }
 
-    @GetMapping("/users/{id}/twitters")
+    @GetMapping("/users/{id:[0-9]+}/twitters")
     Page<TwitterDTO> getAllUserTwitts(@PathVariable Long id
             , @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
         return twitterService.getTwittsOfUser(id, page);
     }
 
     @GetMapping({"/twitters/{id:[0-9]+}", "/users/{userId}/twitters/{id:[0-9]+}"})
-    ResponseEntity<?> getHoaxesRelative(@PathVariable long id, @PathVariable(required = false) Long userId,
+    ResponseEntity<?> getTwittsRelative(@PathVariable long id, @PathVariable(required = false) Long userId,
                                         @RequestParam(name = "count", required = false, defaultValue = "false") boolean count,
                                         @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page,
                                         @RequestParam(name = "direction", defaultValue = "before") String direction) {
@@ -55,5 +56,16 @@ public class TwitterController {
             return ResponseEntity.ok(twitterService.getNewTwitts(id, userId, page.getSort()));
         }
         return ResponseEntity.ok(twitterService.getOldTwitts(id, userId, page));
+    }
+
+    @PostMapping("/twitters/{id:[0-9]+}/like")
+    ResponseEntity<String> likeTwitt(@PathVariable long id, @CurrentUser User user) {
+        return ResponseEntity.ok(twitterService.likeTwitt(id, user));
+    }
+
+    @GetMapping("/twitters/{id:[0-9]+}/getLikes")
+    Page<UserDTO> getAllLikesOfTwitt(@PathVariable long id
+            , @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+        return twitterService.getAllLikesOfTwitt(id, page);
     }
 }
