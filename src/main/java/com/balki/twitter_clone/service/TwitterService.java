@@ -1,16 +1,13 @@
 package com.balki.twitter_clone.service;
 
+import com.balki.twitter_clone.dto.CommentDTO;
+import com.balki.twitter_clone.dto.LikeDTO;
 import com.balki.twitter_clone.dto.TwitterDTO;
-import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.exception.FileAttachmentNotFoundException;
-import com.balki.twitter_clone.model.FileAttachment;
-import com.balki.twitter_clone.model.Like;
-import com.balki.twitter_clone.model.Twitter;
-import com.balki.twitter_clone.model.User;
-import com.balki.twitter_clone.repository.FileAttachmentRepository;
-import com.balki.twitter_clone.repository.LikeRepository;
-import com.balki.twitter_clone.repository.TwitterRepository;
-import com.balki.twitter_clone.repository.UserRepository;
+import com.balki.twitter_clone.exception.TwitterNotFoundException;
+import com.balki.twitter_clone.model.*;
+import com.balki.twitter_clone.repository.*;
+import com.balki.twitter_clone.request.CommentRequest;
 import com.balki.twitter_clone.request.TwitterSaveRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,6 +33,8 @@ public class TwitterService {
     private final UserRepository userRepository;
 
     private final LikeRepository likeRepository;
+
+    private final CommentRepository commentRepository;
 
     private final ModelMapper mapper;
 
@@ -109,9 +108,26 @@ public class TwitterService {
             return "twit favorite";
         }
     }
-    public Page<UserDTO> getAllLikesOfTwitt(long id, Pageable page) {
+
+    public Page<LikeDTO> getAllLikesOfTwitt(long id, Pageable page) {
         Page<Like> likesPage = likeRepository.findByTwitterId(id, page);
-        return new PageImpl<>(likesPage.stream().map(likes -> mapper.map(likes, UserDTO.class)).collect(Collectors.toList()));
+        return new PageImpl<>(likesPage.stream().map(likes -> mapper.map(likes, LikeDTO.class)).collect(Collectors.toList()));
+    }
+
+    public void commentTwitt(long id,User user, CommentRequest commentRequest) {
+        Twitter twitter = twitterRepository.findById(id)
+                .orElseThrow(()-> new TwitterNotFoundException("Twitter not found with this id:"+id));
+        Comment comment = new Comment();
+        comment.setContent(commentRequest.getContent());
+        comment.setTimestamp(LocalDateTime.now());
+        comment.setTwitter(twitter);
+        comment.setUser(user);
+        commentRepository.save(comment);
+    }
+
+    public Page<CommentDTO> getAllCommentsOfTwitt(long id, Pageable page) {
+        Page<Comment> commentsPage = commentRepository.findByTwitterId(id,page);
+        return new PageImpl<>(commentsPage.stream().map(comment->mapper.map(comment,CommentDTO.class)).collect(Collectors.toList()));
     }
 
     Specification<Twitter> idLessThan(long id) {

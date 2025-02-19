@@ -1,9 +1,11 @@
 package com.balki.twitter_clone.controller;
 
 import com.balki.twitter_clone.annotation.CurrentUser;
+import com.balki.twitter_clone.dto.CommentDTO;
+import com.balki.twitter_clone.dto.LikeDTO;
 import com.balki.twitter_clone.dto.TwitterDTO;
-import com.balki.twitter_clone.dto.UserDTO;
 import com.balki.twitter_clone.model.User;
+import com.balki.twitter_clone.request.CommentRequest;
 import com.balki.twitter_clone.request.TwitterSaveRequest;
 import com.balki.twitter_clone.response.GenericResponse;
 import com.balki.twitter_clone.service.TwitterService;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/1.0")
@@ -64,8 +67,20 @@ public class TwitterController {
     }
 
     @GetMapping("/twitters/{id:[0-9]+}/getLikes")
-    Page<UserDTO> getAllLikesOfTwitt(@PathVariable long id
+    Page<LikeDTO> getAllLikesOfTwitt(@PathVariable long id
             , @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
         return twitterService.getAllLikesOfTwitt(id, page);
+    }
+
+    @PostMapping("/twitters/{id:[0-9]+}/comment")
+    public GenericResponse commentTwitt(@CurrentUser User user, @PathVariable long id, @RequestBody @Valid CommentRequest commentRequest) {
+        twitterService.commentTwitt(id, user, commentRequest);
+        return new GenericResponse("Comment saved");
+    }
+
+    @GetMapping("/twitters/{id:[0-9]+}/getAllComments")
+    Page<CommentDTO> getAllCommentsOfTwitt(@PathVariable long id
+            , @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+        return twitterService.getAllCommentsOfTwitt(id, page);
     }
 }

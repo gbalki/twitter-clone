@@ -51,6 +51,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<Like> likes;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
     public String getFullName() {
         return firstName + " " + lastName;
     }

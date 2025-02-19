@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TwitterNotFoundException.class)
+    public ResponseEntity<GenericErrorResponse> handleTwitterNotFoundException(TwitterNotFoundException ex) {
+        GenericErrorResponse errorResponse = new GenericErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Twitter not found", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(FileAttachmentNotFoundException.class)
     public ResponseEntity<GenericErrorResponse> handleFileAttachmentNotFoundException(FileAttachmentNotFoundException ex) {
         GenericErrorResponse errorResponse = new GenericErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "File not found", ex.getMessage());

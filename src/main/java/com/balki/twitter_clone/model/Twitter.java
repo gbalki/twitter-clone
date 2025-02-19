@@ -32,4 +32,7 @@ public class Twitter {
 
     @OneToMany(mappedBy = "twitter",cascade = CascadeType.REMOVE)
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "twitter",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 }
