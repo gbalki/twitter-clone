@@ -1,5 +1,6 @@
 package com.balki.twitter_clone.controller;
 
+import com.balki.twitter_clone.dto.FileAttachmentDTO;
 import com.balki.twitter_clone.model.FileAttachment;
 import com.balki.twitter_clone.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<FileAttachment> saveTwitterAttachment(MultipartFile file){
+    public ResponseEntity<FileAttachmentDTO> saveTwitterAttachment(MultipartFile file){
         return ResponseEntity.ok(fileService.saveTwitterAttachment(file));
     }
 }

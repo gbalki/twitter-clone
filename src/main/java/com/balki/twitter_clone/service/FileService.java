@@ -1,11 +1,14 @@
 package com.balki.twitter_clone.service;
 
 import com.balki.twitter_clone.configuration.FileConfiguration;
+import com.balki.twitter_clone.dto.FileAttachmentDTO;
+import com.balki.twitter_clone.dto.TokenDTO;
 import com.balki.twitter_clone.model.FileAttachment;
 import com.balki.twitter_clone.model.User;
 import com.balki.twitter_clone.repository.FileAttachmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
+import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ public class FileService {
     private final FileConfiguration fileConfiguration;
 
     private final FileAttachmentRepository fileAttachmentRepository;
+
+    private final ModelMapper mapper;
 
     Tika tika = new Tika();
 
@@ -80,7 +85,7 @@ public class FileService {
         return tika.detect(arr);
     }
 
-    public FileAttachment saveTwitterAttachment(MultipartFile file) {
+    public FileAttachmentDTO saveTwitterAttachment(MultipartFile file) {
         String fileName = generateRandomName();
         File target = new File(fileConfiguration.getAttachmentStoragePath() + "/" + fileName);
         String fileType;
@@ -97,7 +102,7 @@ public class FileService {
         attachment.setName(fileName);
         attachment.setDate(LocalDateTime.now());
         attachment.setFileType(fileType);
-        return fileAttachmentRepository.save(attachment);
+        return mapper.map(fileAttachmentRepository.save(attachment), FileAttachmentDTO.class);
     }
 
     @Scheduled(fixedRate = 24 * 60 * 60 * 1000)

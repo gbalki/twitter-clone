@@ -36,6 +36,8 @@ public class TwitterService {
 
     private final CommentRepository commentRepository;
 
+    private final FileService fileService;
+
     private final ModelMapper mapper;
 
 
@@ -63,6 +65,11 @@ public class TwitterService {
         User user = userRepository.findUserById(id);
         Page<Twitter> userTwitters = twitterRepository.findByUser(user, page);
         return new PageImpl<>(userTwitters.stream().map(twits -> mapper.map(twits, TwitterDTO.class)).collect(Collectors.toList()));
+    }
+
+    public Page<TwitterDTO> search(String keyword, Pageable page) {
+        Page<Twitter> twitters = twitterRepository.search(keyword, page);
+        return new PageImpl<>(twitters.stream().map(twits -> mapper.map(twits, TwitterDTO.class)).collect(Collectors.toList()));
     }
 
     public Page<TwitterDTO> getOldTwitts(Long id, Long userId, Pageable page) {
@@ -114,9 +121,9 @@ public class TwitterService {
         return new PageImpl<>(likesPage.stream().map(likes -> mapper.map(likes, LikeDTO.class)).collect(Collectors.toList()));
     }
 
-    public void commentTwitt(long id,User user, CommentRequest commentRequest) {
+    public void commentTwitt(long id, User user, CommentRequest commentRequest) {
         Twitter twitter = twitterRepository.findById(id)
-                .orElseThrow(()-> new TwitterNotFoundException("Twitter not found with this id:"+id));
+                .orElseThrow(() -> new TwitterNotFoundException("Twitter not found with this id:" + id));
         Comment comment = new Comment();
         comment.setContent(commentRequest.getContent());
         comment.setTimestamp(LocalDateTime.now());
@@ -126,8 +133,8 @@ public class TwitterService {
     }
 
     public Page<CommentDTO> getAllCommentsOfTwitt(long id, Pageable page) {
-        Page<Comment> commentsPage = commentRepository.findByTwitterId(id,page);
-        return new PageImpl<>(commentsPage.stream().map(comment->mapper.map(comment,CommentDTO.class)).collect(Collectors.toList()));
+        Page<Comment> commentsPage = commentRepository.findByTwitterId(id, page);
+        return new PageImpl<>(commentsPage.stream().map(comment -> mapper.map(comment, CommentDTO.class)).collect(Collectors.toList()));
     }
 
     Specification<Twitter> idLessThan(long id) {
@@ -146,5 +153,17 @@ public class TwitterService {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.greaterThan(root.get("id"), id);
         };
+    }
+
+    public void delete(long id, User user) {
+        Twitter twitter = twitterRepository.getOne(id);
+        if (twitter.getUser().getId() != user.getId()) {
+            throw new RuntimeException("Only authorized user can be delete twitt");
+        }
+        if (twitter.getFileAttachment() != null) {
+            String fileName = twitter.getFileAttachment().getName();
+            fileService.deleteAttachmentFile(fileName);
+        }
+        twitterRepository.deleteById(id);
     }
 }

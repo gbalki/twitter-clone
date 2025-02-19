@@ -47,6 +47,12 @@ public class TwitterController {
         return twitterService.getTwittsOfUser(id, page);
     }
 
+    @GetMapping("/twitter/search")
+    Page<TwitterDTO> search(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page
+            , @RequestParam String keyword) throws Exception {
+        return twitterService.search(keyword,page);
+    }
+
     @GetMapping({"/twitters/{id:[0-9]+}", "/users/{userId}/twitters/{id:[0-9]+}"})
     ResponseEntity<?> getTwittsRelative(@PathVariable long id, @PathVariable(required = false) Long userId,
                                         @RequestParam(name = "count", required = false, defaultValue = "false") boolean count,
@@ -82,5 +88,11 @@ public class TwitterController {
     Page<CommentDTO> getAllCommentsOfTwitt(@PathVariable long id
             , @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
         return twitterService.getAllCommentsOfTwitt(id, page);
+    }
+
+    @DeleteMapping("/twitters/{id:[0-9]+}/delete")
+    public GenericResponse deleteTwitt(@PathVariable long id, @CurrentUser User user) {
+        twitterService.delete(id, user);
+        return new GenericResponse("twitt deleted");
     }
 }

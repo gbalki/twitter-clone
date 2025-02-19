@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/update/{id}")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/users/delete/{id}")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/twitters/save")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher(baseUrl + "/twitters/{id}/delete")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/twitters/{id}/like")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/twitters/{id}/comment")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(baseUrl + "/file/upload")).authenticated()
