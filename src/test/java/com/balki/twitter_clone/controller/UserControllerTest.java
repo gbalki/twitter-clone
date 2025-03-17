@@ -52,6 +52,7 @@ public class UserControllerTest {
     private static final String GETALL_URL = BASE_URL + "/getAll";
     private static final String GETBYID_URL = BASE_URL + "/getById/{id}";
     private static final String UPDATE_URL = BASE_URL + "/update/{id}";
+    private static final String DELETE_URL = BASE_URL + "/delete/{id}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -157,7 +158,7 @@ public class UserControllerTest {
         userDTO.setImage("profile-image.png");
         when(userServiceMock.getUserById(validUser.getId())).thenReturn(userDTO);
 
-        mockMvc.perform(get(GETBYID_URL,1L)
+        mockMvc.perform(get(GETBYID_URL, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
@@ -182,9 +183,9 @@ public class UserControllerTest {
         userDTO.setDisplayName("test1displayName");
         userDTO.setEmail("testexample@gmail.com");
         userDTO.setImage("b1b8d23dcc7e4c7796666a802d23decd");
-        when(userServiceMock.updateUser(1L,userUpdateRequest)).thenReturn(userDTO);
+        when(userServiceMock.updateUser(1L, userUpdateRequest)).thenReturn(userDTO);
 
-        mockMvc.perform(put(UPDATE_URL,1L)
+        mockMvc.perform(put(UPDATE_URL, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.tokenDto.getRefreshToken())
                         .content(objectMapper.writeValueAsString(userUpdateRequest)))
@@ -193,9 +194,18 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.fullName", is("test1firstName test1lastName")))
                 .andExpect(jsonPath("$.displayName", is("test1displayName")))
                 .andExpect(jsonPath("$.email", is("testexample@gmail.com")));
+    }
 
+    @Test
+    public void testDeleteUserById() throws Exception {
+        doNothing().when(userServiceMock).deleteUser(1L);
 
-        /*verify(userServiceMock, times(1)).updateUser(eq(1L), any(UserUpdateRequest.class));*/
+        mockMvc.perform(delete(DELETE_URL, 1L)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.tokenDto.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User is removed"));
+        Assertions.assertTrue(userRepository.findById(1L).isEmpty());
     }
 
     @AfterEach
