@@ -228,7 +228,7 @@ public class AuthenticationControllerTest {
         String tokenJson = mockMvc.perform(post(REFRESH_TOKEN_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.tokenDto.getRefreshToken())
-                        .content(objectMapper.writeValueAsString(refreshTokenRequest))) // Corrected parentheses
+                        .content(objectMapper.writeValueAsString(refreshTokenRequest)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

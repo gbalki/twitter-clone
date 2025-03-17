@@ -28,14 +28,14 @@ public class UserController {
         return userService.getAll(page, user);
     }
 
-    @GetMapping("/getBy/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
-                                              @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+                                              @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(userService.updateUser(id, userUpdateRequest));
     }
 
