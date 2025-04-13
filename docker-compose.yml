@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  twitter-clone:
+    container_name: twitter-app
+    image:  twitter-clone-app
+    restart: always
+    build: .
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-docker:3306/twitterdb_docker?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
+    ports:
+      - "8080:8080"
+
+  mysql-docker:
+    image: mysql:8
+    container_name: docker-connection
+    environment:
+      MYSQL_DATABASE: twitterdb_docker
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
